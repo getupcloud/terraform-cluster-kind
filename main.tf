@@ -29,7 +29,7 @@ module "cronitor" {
   cluster_name  = var.cluster_name
   customer_name = var.customer_name
   cluster_sla   = var.cluster_sla
-  suffix        = "doks"
+  suffix        = "kind"
   tags          = ["local"]
   pagerduty_key = var.cronitor_pagerduty_key
   api_key       = var.cronitor_api_key
