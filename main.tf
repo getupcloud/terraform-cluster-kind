@@ -1,19 +1,19 @@
 module "cluster" {
-  source = "github.com/getupcloud/terraform-module-kind?ref=main"
+  source = "github.com/getupcloud/terraform-module-kind?ref=v1.0"
 
   name               = var.cluster_name
   kubernetes_version = var.kubernetes_version
 }
 
 module "kubeconfig" {
-  source = "github.com/getupcloud/terraform-module-kubeconfig?ref=main"
+  source = "github.com/getupcloud/terraform-module-kubeconfig?ref=v1.0"
 
   cluster_name = module.cluster.name
   command      = var.get_kubeconfig_command
 }
 
 module "flux" {
-  source = "github.com/getupcloud/terraform-module-flux?ref=main"
+  source = "github.com/getupcloud/terraform-module-flux?ref=v1.0"
 
   git_repo       = var.flux_git_repo
   manifests_path = "./clusters/${module.cluster.name}/kind/manifests"
@@ -24,7 +24,7 @@ module "flux" {
 }
 
 module "cronitor" {
-  source = "github.com/getupcloud/terraform-module-cronitor?ref=main"
+  source = "github.com/getupcloud/terraform-module-cronitor?ref=v1.0"
 
   cluster_name  = var.cluster_name
   customer_name = var.customer_name
