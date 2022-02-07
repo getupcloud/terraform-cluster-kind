@@ -13,7 +13,8 @@ module "kubeconfig" {
 }
 
 module "flux" {
-  source = "github.com/getupcloud/terraform-module-flux?ref=v1.0"
+  source     = "github.com/getupcloud/terraform-module-flux?ref=v1.0"
+  depends_on = [module.cluster]
 
   git_repo       = var.flux_git_repo
   manifests_path = "./clusters/${module.cluster.name}/kind/manifests"
