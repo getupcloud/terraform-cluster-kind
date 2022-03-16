@@ -1,5 +1,5 @@
 module "cluster" {
-  source = "github.com/getupcloud/terraform-module-kind?ref=v1.0"
+  source = "github.com/getupcloud/terraform-module-kind?ref=v2.0"
 
   name               = var.cluster_name
   kubernetes_version = var.kubernetes_version
@@ -25,7 +25,6 @@ module "flux" {
     alertmanager_cronitor_id : module.cronitor.cronitor_id
     },
     module.teleport-agent.teleport_agent_config,
-
     var.manifests_template_vars
   )
 }
