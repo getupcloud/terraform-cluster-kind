@@ -1,23 +1,47 @@
-module "cluster" {
-  source = "github.com/getupcloud/terraform-module-kind?ref=v2.0"
+resource "kind_cluster" "cluster" {
+  name            = var.cluster_name
+  kubeconfig_path = local.kubeconfig_filename
+  wait_for_ready  = true
 
-  name               = var.cluster_name
-  kubernetes_version = var.kubernetes_version
+  kind_config {
+    kind        = "Cluster"
+    api_version = "kind.x-k8s.io/v1alpha4"
+
+    node {
+      role                   = "control-plane"
+      image                  = local.kind_image
+      kubeadm_config_patches = var.kubeadm_config_patches.master
+    }
+
+    node {
+      role                   = "worker"
+      image                  = local.kind_image
+      kubeadm_config_patches = var.kubeadm_config_patches.infra
+    }
+
+    node {
+      role                   = "worker"
+      image                  = local.kind_image
+      kubeadm_config_patches = var.kubeadm_config_patches.app
+    }
+  }
 }
 
 module "kubeconfig" {
-  source = "github.com/getupcloud/terraform-module-kubeconfig?ref=v1.0"
+  source     = "github.com/getupcloud/terraform-module-kubeconfig?ref=v1.0"
+  depends_on = [kind_cluster.cluster]
 
-  cluster_name = module.cluster.name
+  cluster_name = kind_cluster.cluster.name
   command      = var.get_kubeconfig_command
+  kubeconfig   = local.kubeconfig_filename
 }
 
 module "flux" {
-  source     = "github.com/getupcloud/terraform-module-flux?ref=v1.10"
-  depends_on = [module.cluster]
+  source = "github.com/getupcloud/terraform-module-flux?ref=v1.10"
+  #  depends_on = [module.kubeconfig]
 
   git_repo       = var.flux_git_repo
-  manifests_path = "./clusters/${module.cluster.name}/kind/manifests"
+  manifests_path = "./clusters/${var.cluster_name}/kind/manifests"
   wait           = var.flux_wait
   flux_version   = var.flux_version
 
@@ -43,7 +67,7 @@ module "cronitor" {
   suffix           = "kind"
   tags             = ["local"]
   pagerduty_key    = var.cronitor_pagerduty_key
-  api_endpoint     = module.cluster.api_endpoint
+  api_endpoint     = local.api_endpoint
 }
 
 module "opsgenie" {
