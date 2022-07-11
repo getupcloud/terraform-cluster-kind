@@ -1,9 +1,12 @@
-VERSION:=2.0
+VERSION:=2.1
 
-test: fmt init validate
+test: fmt fmt init validate
 
 i init:
 	terraform init
+
+l lint:
+	@type tflint &>/dev/null || echo "Ignoring not found: tflint" && tflint
 
 v validate:
 	terraform validate

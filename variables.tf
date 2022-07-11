@@ -77,10 +77,17 @@ variable "cronitor_enabled" {
   type        = bool
   default     = false
 }
+
 variable "cronitor_pagerduty_key" {
   description = "Cronitor PagerDuty key"
   type        = string
   default     = ""
+}
+
+variable "cronitor_notification_list" {
+  description = "Cronitor Notification List to send alerts"
+  type        = list(string)
+  default     = []
 }
 
 variable "opsgenie_enabled" {
