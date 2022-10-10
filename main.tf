@@ -37,7 +37,7 @@ module "kubeconfig" {
 }
 
 module "flux" {
-  source = "github.com/getupcloud/terraform-module-flux?ref=v1.10"
+  source = "github.com/getupcloud/terraform-module-flux?ref=v1.11"
   #  depends_on = [module.kubeconfig]
 
   git_repo       = var.flux_git_repo
