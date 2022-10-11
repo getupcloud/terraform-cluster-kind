@@ -17,6 +17,16 @@ resource "kind_cluster" "cluster" {
       role                   = "worker"
       image                  = local.kind_image
       kubeadm_config_patches = var.kubeadm_config_patches.infra
+
+      extra_port_mappings {
+        container_port = 80
+        host_port      = var.http_port
+      }
+
+      extra_port_mappings {
+        container_port = 443
+        host_port      = var.https_port
+      }
     }
 
     node {

@@ -29,3 +29,15 @@ variable "kubeadm_config_patches" {
     ]
   }
 }
+
+variable "http_port" {
+  description = "Host port to expose container HTTP ingress port"
+  type        = number
+  default     = 8080
+}
+
+variable "https_port" {
+  description = "Host port to expose container HTTPS ingress port"
+  type        = number
+  default     = 8443
+}
