@@ -41,3 +41,9 @@ variable "https_port" {
   type        = number
   default     = 8443
 }
+
+variable "ssh_port" {
+  description = "Host port to expose container HTTP ingress port"
+  type        = number
+  default     = 2222
+}

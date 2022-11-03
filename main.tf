@@ -19,13 +19,18 @@ resource "kind_cluster" "cluster" {
       kubeadm_config_patches = var.kubeadm_config_patches.infra
 
       extra_port_mappings {
-        container_port = 80
+        container_port = 32080
         host_port      = var.http_port
       }
 
       extra_port_mappings {
-        container_port = 443
+        container_port = 32443
         host_port      = var.https_port
+      }
+
+      extra_port_mappings {
+        container_port = 32022
+        host_port      = var.ssh_port
       }
     }
 
