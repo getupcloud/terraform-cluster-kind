@@ -1,12 +1,27 @@
-VERSION:=2.5
+VERSION_TXT    := version.txt
+FILE_VERSION   := $(shell cat $(VERSION_TXT))
+VERSION        ?= $(FILE_VERSION)
+RELEASE        := v$(VERSION)
+SEMVER_REGEX   := ^([0-9]+)\.([0-9]+)\.([0-9]+)(-([0-9A-Za-z-]+(\.[0-9A-Za-z-]+)*))?(\+[0-9A-Za-z-]+)?$
+IMPORT_SOURCES := https://github.com/getupcloud/managed-cluster/raw/main/templates/variables-common.tf
 
-test: fmt fmt init validate
+.ONESHELL:
+
+import:
+	$(foreach i,$(filter https://% http://%, $(IMPORT_SOURCES)),curl -sLO $(i);)
+	$(foreach i,$(filter-out https://% http://%, $(IMPORT_SOURCES)),cp -f $(i) ./;)
+
+test: fmt lint init validate
 
 i init:
 	terraform init
 
 l lint:
 	@type tflint &>/dev/null || echo "Ignoring not found: tflint" && tflint
+	if ! [[ "$(VERSION)" =~ $(SEMVER_REGEX) ]]; then
+		echo Invalid semantic version: $(VERSION) >&2;
+		exit 1;
+	fi
 
 v validate:
 	terraform validate
@@ -14,14 +29,21 @@ v validate:
 f fmt:
 	terraform fmt
 
-release:
-	@if [ $$(git status --short | wc -l) -gt 0 ]; then \
-		git status; \
-		echo ; \
-		echo "Tree is not clean. Please commit and try again"; \
-		exit 1; \
+release: update-version
+	$(MAKE) build-release
+
+update-version:
+	@if git status --porcelain | grep '^[^?]' | grep -vq $(VERSION_TXT); then
+		git status;
+		echo -e "\n>>> Tree is not clean. Please commit and try again <<<\n";
+		exit 1;
 	fi
+	[ -n "$$BUILD_VERSION" ] || read -e -i "$(FILE_VERSION)" -p "New version: " BUILD_VERSION
+	echo $$BUILD_VERSION > $(VERSION_TXT)
+
+build-release:
 	git pull --tags
-	git tag v$(VERSION)
+	git commit -m "Built release $(RELEASE)" $(VERSION_TXT)
+	git tag $(RELEASE)
 	git push --tags
 	git push
