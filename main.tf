@@ -59,6 +59,7 @@ module "flux" {
   manifests_path = "./clusters/${var.cluster_name}/kind/manifests"
   wait           = var.flux_wait
   flux_version   = var.flux_version
+  debug          = var.dump_debug
 
   manifests_template_vars = local.manifests_template_vars
 }
