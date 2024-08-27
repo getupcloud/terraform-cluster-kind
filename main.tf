@@ -59,9 +59,9 @@ module "flux" {
   manifests_path = "./clusters/${var.cluster_name}/kind/manifests"
   wait           = var.flux_wait
   flux_version   = var.flux_version
-  debug          = var.dump_debug
-
+  flux_install_file       = var.flux_install_file
   manifests_template_vars = local.manifests_template_vars
+  debug          = var.dump_debug
 }
 
 module "teleport-agent" {
