@@ -1,8 +1,8 @@
 terraform {
   required_providers {
     kind = {
-      source  = "kyma-incubator/kind"
-      version = "~> 0.0.11"
+      source  = "tehcyx/kind"
+      version = "~> 0.0.19"
     }
 
     kubectl = {
@@ -17,16 +17,6 @@ terraform {
     kustomization = {
       source  = "kbst/kustomization"
       version = "< 1"
-    }
-
-    cronitor = {
-      source  = "nauxliu/cronitor"
-      version = "~> 1"
-    }
-
-    opsgenie = {
-      source  = "opsgenie/opsgenie"
-      version = "~> 0.6"
     }
 
     shell = {

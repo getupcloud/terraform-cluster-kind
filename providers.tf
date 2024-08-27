@@ -1,3 +1,6 @@
+provider "kind" {
+}
+
 provider "kubernetes" {
   config_path            = var.use_kubeconfig ? var.kubeconfig_filename : null
   host                   = var.use_kubeconfig ? null : local.api_endpoint
