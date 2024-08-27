@@ -15,7 +15,7 @@ variable "get_kubeconfig_command" {
 variable "kubernetes_version" {
   description = "Kubernetes version"
   type        = string
-  default     = "1.20"
+  default     = "1.29"
 }
 
 variable "kubeadm_config_patches" {
